@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -13,16 +14,16 @@ public class TransactionEntity {
     private int transactionId;
     @Column(name = "customer_id")
     private String customerId;
-    @Column (name = "total")
-    private double total;
+    @Column (name = "amount")
+    private BigDecimal amount;
     @Column (name = "date")
     private LocalDate date;
 
     public TransactionEntity() {}
 
-    public TransactionEntity(String customerId, double total, LocalDate date) {
+    public TransactionEntity(String customerId, BigDecimal amount, LocalDate date) {
         this.customerId = customerId;
-        this.total = total;
+        this.amount = amount;
         this.date = date;
     }
 
@@ -42,12 +43,12 @@ public class TransactionEntity {
         this.customerId = customerId;
     }
 
-    public double getTotal() {
-        return total;
+    public BigDecimal getAmount() {
+        return amount;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
     }
 
     public LocalDate getDate() {
