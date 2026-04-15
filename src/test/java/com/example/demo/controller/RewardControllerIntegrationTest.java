@@ -23,8 +23,12 @@ class RewardControllerIntegrationTest {
                 .param("startDate", "2026-01-01")
                 .param("endDate", "2026-03-31"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].customerId").exists())
-                .andExpect(jsonPath("$[0].totalPoints").exists());
+                .andExpect(jsonPath("$[0].customerId").value("C001"))
+                .andExpect(jsonPath("$[0].totalPoints").value(440))
+                .andExpect(jsonPath("$[1].customerId").value("C002"))
+                .andExpect(jsonPath("$[1].totalPoints").value(200))
+                .andExpect(jsonPath("$[2].customerId").value("C003"))
+                .andExpect(jsonPath("$[2].totalPoints").value(485));
     }
 
     @Test
@@ -39,14 +43,18 @@ class RewardControllerIntegrationTest {
     void calculateRewards_missingStartDate_shouldReturn400() throws Exception {
         mockMvc.perform(get("/api/v1/rewards/calculate")
                 .param("endDate", "2026-03-31"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Both startDate and endDate must be provided"));
     }
 
     @Test
     void calculateRewards_missingEndDate_shouldReturn400() throws Exception {
         mockMvc.perform(get("/api/v1/rewards/calculate")
                 .param("startDate", "2026-01-01"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message").value("Both startDate and endDate must be provided"));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.calculator.RewardCalculator;
 import com.example.demo.dto.CustomerReward;
 import com.example.demo.dto.MonthlyReward;
 import com.example.demo.entity.TransactionEntity;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,28 +20,16 @@ import java.util.stream.Collectors;
 @Service
 public class RewardService {
     private static final Logger log = LoggerFactory.getLogger(RewardService.class);
-    private static final BigDecimal HUNDRED = new BigDecimal("100");
-    private static final BigDecimal FIFTY = new BigDecimal("50");
 
     private final TransactionRepository repo;
+    private final RewardCalculator calculator;
 
-    public RewardService(TransactionRepository repo) {
+    public RewardService(TransactionRepository repo, RewardCalculator calculator) {
         this.repo = repo;
+        this.calculator = calculator;
     }
 
-    public int calculatePoints(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
-            return 0;
-        }
 
-        int points = 0;
-        if (amount.compareTo(HUNDRED) > 0) {
-            points += amount.subtract(HUNDRED).multiply(new BigDecimal("2")).intValue() + 50;
-        } else if (amount.compareTo(FIFTY) > 0) {
-            points += amount.subtract(FIFTY).intValue();
-        }
-        return points;
-    }
 
     public List<CustomerReward> calculateRewards(LocalDate startDate, LocalDate endDate) {
         validateDateRange(startDate, endDate);
@@ -54,6 +42,7 @@ public class RewardService {
             .collect(Collectors.groupingBy(TransactionEntity::getCustomerId))
             .entrySet().stream()
             .map(entry -> buildCustomerReward(entry.getKey(), entry.getValue()))
+            .sorted((a, b) -> a.getCustomerId().compareTo(b.getCustomerId()))
             .collect(Collectors.toList());
     }
 
@@ -64,8 +53,7 @@ public class RewardService {
         if (startDate.isAfter(endDate) || startDate.isEqual(endDate)) {
             throw new InvalidDateRangeException("startDate must be before endDate");
         }
-        long monthsBetween = ChronoUnit.MONTHS.between(startDate, endDate);
-        if (monthsBetween > 3 || (monthsBetween == 3 && endDate.getDayOfMonth() > startDate.getDayOfMonth())) {
+        if (endDate.isAfter(startDate.plusMonths(3))) {
             throw new InvalidDateRangeException("Date range must not exceed 3 months");
         }
     }
@@ -74,7 +62,7 @@ public class RewardService {
         Map<YearMonth, Integer> monthlyPoints = transactions.stream()
             .collect(Collectors.groupingBy(
                 t -> YearMonth.from(t.getDate()),
-                Collectors.summingInt(t -> calculatePoints(t.getAmount()))
+                Collectors.summingInt(t -> calculator.calculatePoints(t.getAmount()))
             ));
 
         List<MonthlyReward> monthlyRewards = monthlyPoints.entrySet().stream()
