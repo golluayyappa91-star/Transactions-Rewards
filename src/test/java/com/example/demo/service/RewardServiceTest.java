@@ -78,5 +78,12 @@ class RewardServiceTest {
         assertEquals(1, result.size());
         assertEquals("C001", result.get(0).getCustomerId());
         assertEquals(120, result.get(0).getTotalPoints());
+        assertEquals(2, result.get(0).getMonthlyRewards().size());
+        assertEquals(2026, result.get(0).getMonthlyRewards().get(0).getYear());
+        assertEquals(1, result.get(0).getMonthlyRewards().get(0).getMonth());
+        assertEquals(90, result.get(0).getMonthlyRewards().get(0).getPoints());
+        assertEquals(2026, result.get(0).getMonthlyRewards().get(1).getYear());
+        assertEquals(2, result.get(0).getMonthlyRewards().get(1).getMonth());
+        assertEquals(30, result.get(0).getMonthlyRewards().get(1).getPoints());
     }
 }

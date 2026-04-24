@@ -25,6 +25,15 @@ class RewardControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].customerId").value("C001"))
                 .andExpect(jsonPath("$[0].totalPoints").value(440))
+                .andExpect(jsonPath("$[0].monthlyRewards[0].year").value(2026))
+                .andExpect(jsonPath("$[0].monthlyRewards[0].month").value(1))
+                .andExpect(jsonPath("$[0].monthlyRewards[0].points").value(120))
+                .andExpect(jsonPath("$[0].monthlyRewards[1].year").value(2026))
+                .andExpect(jsonPath("$[0].monthlyRewards[1].month").value(2))
+                .andExpect(jsonPath("$[0].monthlyRewards[1].points").value(250))
+                .andExpect(jsonPath("$[0].monthlyRewards[2].year").value(2026))
+                .andExpect(jsonPath("$[0].monthlyRewards[2].month").value(3))
+                .andExpect(jsonPath("$[0].monthlyRewards[2].points").value(70))
                 .andExpect(jsonPath("$[1].customerId").value("C002"))
                 .andExpect(jsonPath("$[1].totalPoints").value(200))
                 .andExpect(jsonPath("$[2].customerId").value("C003"))
@@ -63,6 +72,15 @@ class RewardControllerIntegrationTest {
                 .param("startDate", "2026-03-31")
                 .param("endDate", "2026-01-01"))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void calculateRewards_startDateEqualsEndDate_shouldReturn400() throws Exception {
+        mockMvc.perform(get("/api/v1/rewards/calculate")
+                .param("startDate", "2026-01-15")
+                .param("endDate", "2026-01-15"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("startDate must be before endDate"));
     }
 
     @Test

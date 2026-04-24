@@ -42,6 +42,13 @@ class RewardCalculatorTest {
     }
 
     @Test
+    void calculatePoints_fractionalAmount_shouldHandleCorrectly() {
+        assertEquals(51, calculator.calculatePoints(new BigDecimal("100.50")));
+        assertEquals(51, calculator.calculatePoints(new BigDecimal("100.99")));
+        assertEquals(25, calculator.calculatePoints(new BigDecimal("75.50")));
+    }
+
+    @Test
     void calculatePoints_negativeAmount_shouldReturnZero() {
         assertEquals(0, calculator.calculatePoints(new BigDecimal("-50")));
     }

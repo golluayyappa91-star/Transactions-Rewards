@@ -43,7 +43,7 @@ public class RewardService {
             .entrySet().stream()
             .map(entry -> buildCustomerReward(entry.getKey(), entry.getValue()))
             .sorted((a, b) -> a.getCustomerId().compareTo(b.getCustomerId()))
-            .collect(Collectors.toList());
+            .toList();
     }
 
     private void validateDateRange(LocalDate startDate, LocalDate endDate) {
@@ -71,7 +71,7 @@ public class RewardService {
                 int yearComp = Integer.compare(a.getYear(), b.getYear());
                 return yearComp != 0 ? yearComp : Integer.compare(a.getMonth(), b.getMonth());
             })
-            .collect(Collectors.toList());
+            .toList();
 
         int totalPoints = monthlyRewards.stream().mapToInt(MonthlyReward::getPoints).sum();
 

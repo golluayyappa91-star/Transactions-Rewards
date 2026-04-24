@@ -38,12 +38,13 @@ Rewards-Api/
 ├── src/
 │   ├── main/
 │   │   ├── java/com/example/demo/
+│   │   │   ├── calculator/
+│   │   │   │   └── RewardCalculator.java
 │   │   │   ├── controller/
 │   │   │   │   └── RewardController.java
 │   │   │   ├── dto/
 │   │   │   │   ├── CustomerReward.java
-│   │   │   │   ├── MonthlyReward.java
-│   │   │   │   └── RewardResponse.java
+│   │   │   │   └── MonthlyReward.java
 │   │   │   ├── entity/
 │   │   │   │   └── TransactionEntity.java
 │   │   │   ├── exception/
@@ -54,16 +55,20 @@ Rewards-Api/
 │   │   │   │   └── TransactionRepository.java
 │   │   │   ├── service/
 │   │   │   │   └── RewardService.java
-│   │   │   └── DemoApplication.java
+│   │   │   └── RewardsApplication.java
 │   │   └── resources/
 │   │       ├── application.properties
 │   │       └── data.sql
 │   └── test/
 │       └── java/com/example/demo/
+│           ├── calculator/
+│           │   └── RewardCalculatorTest.java
 │           ├── controller/
 │           │   └── RewardControllerIntegrationTest.java
 │           └── service/
 │               └── RewardServiceTest.java
+├── Documentation/
+│   └── README.md
 ├── pom.xml
 ├── .gitignore
 └── README.md
@@ -92,7 +97,7 @@ Rewards-Api/
    ```bash
    mvn spring-boot:run
    ```
-   Or run `DemoApplication.java` from your IDE (IntelliJ IDEA / Eclipse)
+   Or run `RewardsApplication.java` from your IDE (IntelliJ IDEA / Eclipse)
 
 4. **Application will start on**
    ```
@@ -265,15 +270,12 @@ mvn test
 ```
 
 ### Test Coverage
-- **Unit Tests**: `RewardServiceTest.java`
-  - Reward calculation logic for various amounts
-  - Date validation scenarios
-  - Edge cases (null, negative, boundary values)
+- **Unit Tests**: 
+  - `RewardCalculatorTest.java` - Point calculation logic for various amounts including fractional values
+  - `RewardServiceTest.java` - Service layer logic, date validation, monthly breakdown grouping
   
-- **Integration Tests**: `RewardControllerIntegrationTest.java`
-  - Full HTTP request/response cycle
-  - Valid date range scenarios
-  - Error handling and validation
+- **Integration Tests**: 
+  - `RewardControllerIntegrationTest.java` - Full HTTP request/response cycle, error handling, monthly breakdown validation
 
 ---
 
